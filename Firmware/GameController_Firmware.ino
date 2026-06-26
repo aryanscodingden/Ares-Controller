@@ -11,7 +11,6 @@ struct ButtonMapping {
 uint8_t pin;
 uint16_t gamepadButton;
 };
-// Your precise working layout
 ButtonMapping actionButtons[] = {
 {34, BUTTON_1},  // A
 {32, BUTTON_2},  // B
@@ -68,7 +67,7 @@ bleGamepad.press(actionButtons[i].gamepadButton);
 bleGamepad.release(actionButtons[i].gamepadButton);
 }
 }
-// 2. Process Digital Triggers
+
 if (digitalRead(LEFT_TRIGGER_BTN) == LOW) {
 bleGamepad.setLeftTrigger(65535);
 } else {
@@ -79,7 +78,6 @@ bleGamepad.setRightTrigger(65535);
 } else {
 bleGamepad.setRightTrigger(0);
 }
-// 3. Process D-Pad Vectors
 bool up = (digitalRead(DPAD_U) == LOW);
 bool down = (digitalRead(DPAD_D) == LOW);
 bool left = (digitalRead(DPAD_L) == LOW);
@@ -93,16 +91,13 @@ else if (down) bleGamepad.setHat1(DPAD_DOWN);
 else if (left) bleGamepad.setHat1(DPAD_LEFT);
 else if (right) bleGamepad.setHat1(DPAD_RIGHT);
 else bleGamepad.setHat1(HAT_CENTERED);
-// 4. Process Joysticks
-// OPTIMIZED: Re-scaled to standard signed integer limits to eliminate the floating center issue.
-// Note: If an axis moves opposite to your hand, swap the last two numbers (e.g., -32767, 32767 to 32767, -32767)
+// Joysticks
 int lsX = map(analogRead(LEFT_STICK_Y), 0, 4095, -32767, 32767);
 int lsY = map(analogRead(LEFT_STICK_X), 0, 4095, -32767, 32767);
 int rsX = map(analogRead(RIGHT_STICK_X), 0, 4095, -32767, 32767);
 int rsY = map(analogRead(RIGHT_STICK_Y), 0, 4095, -32767, 32767);
 bleGamepad.setLeftThumb(lsX, lsY);
 bleGamepad.setRightThumb(rsX, rsY);
-// Send unified controller state data
 bleGamepad.sendReport();
 delay(8);
 }
